@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: ai_chat_backend
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./:/app
+      - sqlite_data:/app/data
+      - ./models:/app/models
+      - ./uploads:/app/uploads
+
+  mongodb:
+    image: mongo:7
+    container_name: ai_chat_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: ai_chat_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  sqlite_data:
+  mongo_data:
